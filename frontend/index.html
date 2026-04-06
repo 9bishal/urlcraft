@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URLCraft - URL Shortener</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .tab-btn {
+            padding: 10px 15px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+            font-size: 14px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .button.secondary {
+            background: #f0f0f0;
+            color: #333;
+            margin-top: 10px;
+        }
+
+        .button.secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .auth-status {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+
+        .auth-status.logged-in {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .auth-status.logged-out {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            border-left: 4px solid #2e7d32;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            border-left: 4px solid #c62828;
+        }
+
+        .url-list {
+            list-style: none;
+        }
+
+        .url-item {
+            background: #f5f5f5;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .url-item-code {
+            font-weight: 600;
+            color: #667eea;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 5px;
+        }
+
+        .url-item-original {
+            color: #666;
+            word-break: break-all;
+            margin-bottom: 5px;
+            font-size: 12px;
+        }
+
+        .url-item-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .url-item-actions button {
+            flex: 1;
+            padding: 6px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .url-item-actions button:hover {
+            background: #f0f0f0;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 10px;
+            color: #667eea;
+            font-size: 13px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .token-display {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: #666;
+            max-height: 100px;
+            overflow-y: auto;
+        }
+
+        .stats {
+            font-size: 13px;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔗 URLCraft</h1>
+            <p>Secure URL Shortener with JWT Authentication</p>
+        </div>
+
+        <div class="content">
+            <!-- Auth Status -->
+            <div id="authStatus" class="auth-status logged-out">
+                Not logged in
+            </div>
+
+            <!-- Messages -->
+            <div id="message" style="display: none;"></div>
+
+            <!-- Tab Buttons -->
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchTab('auth', event)">Auth</button>
+                <button class="tab-btn" onclick="switchTab('shorten', event)">Shorten</button>
+                <button class="tab-btn" onclick="switchTab('myurls', event)">My URLs</button>
+            </div>
+
+            <!-- AUTH TAB -->
+            <div id="auth" class="tab-content active">
+                <div id="authForm">
+                    <!-- Register Form -->
+                    <div id="registerForm">
+                        <h3 style="margin-bottom: 15px; color: #333;">Create Account</h3>
+                        
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" id="regUsername" placeholder="alice_dev" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="regEmail" placeholder="alice@example.com" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Password (min 8 chars)</label>
+                            <input type="password" id="regPassword" placeholder="SecurePass123!" />
+                        </div>
+
+                        <button class="button" onclick="register()">Register</button>
+                        
+                        <button class="button secondary" onclick="toggleAuthForm()">
+                            Have an account? Login
+                        </button>
+                    </div>
+
+                    <!-- Login Form -->
+                    <div id="loginForm" style="display: none;">
+                        <h3 style="margin-bottom: 15px; color: #333;">Login</h3>
+                        
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" id="loginUsername" placeholder="alice_dev" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="loginPassword" placeholder="SecurePass123!" />
+                        </div>
+
+                        <button class="button" onclick="login()">Login</button>
+                        
+                        <button class="button secondary" onclick="toggleAuthForm()">
+                            New user? Register
+                        </button>
+                    </div>
+
+                    <!-- Logged In View -->
+                    <div id="loggedInView" style="display: none;">
+                        <h3 style="margin-bottom: 15px; color: #333;">Session</h3>
+                        
+                        <div class="auth-status logged-in" id="userInfo">
+                            Logged in as: <strong id="currentUsername"></strong>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Access Token (expires in 15 min)</label>
+                            <div class="token-display" id="accessTokenDisplay"></div>
+                        </div>
+
+                        <button class="button secondary" onclick="refreshAccessToken()" style="background: #fff3cd; color: #856404;">
+                            🔄 Refresh Access Token
+                        </button>
+
+                        <button class="button secondary" onclick="logout()" style="background: #ffebee; color: #c62828;">
+                            Logout
+                        </button>
+                    </div>
+                </div>
+
+                <div class="loading" id="authLoading">Loading...</div>
+            </div>
+
+            <!-- SHORTEN TAB -->
+            <div id="shorten" class="tab-content">
+                <h3 style="margin-bottom: 15px; color: #333;">Create Short URL</h3>
+
+                <div id="shortenGuard" style="display: none;">
+                    <p style="color: #c62828; font-size: 14px; margin-bottom: 15px;">
+                        ⚠️ Please login first to create URLs
+                    </p>
+                </div>
+
+                <div id="shortenForm">
+                    <div class="form-group">
+                        <label>Long URL</label>
+                        <input type="url" id="longUrl" placeholder="https://example.com/very/long/url" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Expiration (optional)</label>
+                        <input type="text" id="expiresIn" placeholder="e.g., 24h, 7d, 30m" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Custom Code (optional)</label>
+                        <input type="text" id="customCode" placeholder="my-link" />
+                    </div>
+
+                    <button class="button" onclick="shortenUrl()">Create Short URL</button>
+
+                    <div id="shortenResult" style="margin-top: 15px; display: none;">
+                        <div class="success" id="shortenResultContent"></div>
+                        <button class="button secondary" onclick="copyToClipboard()" id="copyBtn">
+                            📋 Copy Short URL
+                        </button>
+                        <button class="button secondary" onclick="clearShortenForm()">
+                            Create Another
+                        </button>
+                    </div>
+                </div>
+
+                <div class="loading" id="shortenLoading">Creating...</div>
+            </div>
+
+            <!-- MY URLS TAB -->
+            <div id="myurls" class="tab-content">
+                <h3 style="margin-bottom: 15px; color: #333;">Your Short URLs</h3>
+
+                <div id="myUrlsGuard" style="display: none;">
+                    <p style="color: #c62828; font-size: 14px; margin-bottom: 15px;">
+                        ⚠️ Please login to view your URLs
+                    </p>
+                </div>
+
+                <div id="myUrlsContent">
+                    <button class="button secondary" onclick="loadMyUrls()" style="margin-bottom: 15px;">
+                        🔄 Load My URLs
+                    </button>
+
+                    <ul class="url-list" id="urlList">
+                        <li style="color: #999; font-size: 13px;">No URLs yet. Create one in the Shorten tab!</li>
+                    </ul>
+                </div>
+
+                <div class="loading" id="myUrlsLoading">Loading...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global error handler
+        window.addEventListener('error', (event) => {
+            console.error('Global error caught:', event.error);
+            event.preventDefault();
+        });
+
+        const API_BASE = 'http://localhost:3000';
+        let accessToken = null;
+        let refreshToken = null;
+        let username = null;
+        let currentShortUrl = '';
+
+        // Load from localStorage
+        function loadAuthState() {
+            try {
+                accessToken = localStorage.getItem('accessToken');
+                refreshToken = localStorage.getItem('refreshToken');
+                username = localStorage.getItem('username');
+                console.log('Auth state loaded:', { accessToken: !!accessToken, username });
+            } catch (e) {
+                console.warn('localStorage access failed:', e);
+            }
+        }
+
+        // Initialize - only call on DOMContentLoaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                console.log('DOMContentLoaded event fired');
+                loadAuthState();
+                updateAuthStatus();
+            });
+        } else {
+            console.log('DOM already loaded, initializing immediately');
+            loadAuthState();
+            updateAuthStatus();
+        }
+
+        // Update auth status
+        function updateAuthStatus() {
+            try {
+                console.log('updateAuthStatus called');
+                const statusEl = document.getElementById('authStatus');
+                const authForm = document.getElementById('authForm');
+                const loggedInView = document.getElementById('loggedInView');
+                const registerForm = document.getElementById('registerForm');
+                const shortenGuard = document.getElementById('shortenGuard');
+                const shortenForm = document.getElementById('shortenForm');
+                const myUrlsGuard = document.getElementById('myUrlsGuard');
+                const myUrlsContent = document.getElementById('myUrlsContent');
+
+                if (!statusEl || !authForm) {
+                    console.error('Required elements not found, retrying in 100ms');
+                    setTimeout(() => updateAuthStatus(), 100);
+                    return;
+                }
+
+                if (accessToken && username) {
+                    statusEl.className = 'auth-status logged-in';
+                    statusEl.innerHTML = `✅ Logged in as <strong>${username}</strong>`;
+                    authForm.style.display = 'none';
+                    loggedInView.style.display = 'block';
+                    document.getElementById('currentUsername').textContent = username;
+                    document.getElementById('accessTokenDisplay').textContent = accessToken.substring(0, 50) + '...';
+                    shortenGuard.style.display = 'none';
+                    shortenForm.style.display = 'block';
+                    myUrlsGuard.style.display = 'none';
+                    myUrlsContent.style.display = 'block';
+                    console.log('User logged in state set');
+                } else {
+                    statusEl.className = 'auth-status logged-out';
+                    statusEl.innerHTML = '❌ Not logged in';
+                    authForm.style.display = 'block';
+                    loggedInView.style.display = 'none';
+                    registerForm.style.display = 'block';
+                    shortenGuard.style.display = 'block';
+                    shortenForm.style.display = 'none';
+                    myUrlsGuard.style.display = 'block';
+                    myUrlsContent.style.display = 'none';
+                    console.log('User logged out state set');
+                }
+            } catch (err) {
+                console.error('Error in updateAuthStatus:', err);
+            }
+        }
+
+        // Switch tabs
+        function switchTab(tabName, event) {
+            console.log('switchTab called:', { tabName, eventExists: !!event });
+            
+            try {
+                // Remove active from all content tabs
+                document.querySelectorAll('.tab-content').forEach(el => {
+                    if (el && el.classList) {
+                        el.classList.remove('active');
+                    }
+                });
+                
+                // Remove active from all buttons
+                document.querySelectorAll('.tab-btn').forEach(el => {
+                    if (el && el.classList) {
+                        el.classList.remove('active');
+                    }
+                });
+                
+                // Add active to selected tab content
+                const tabElement = document.getElementById(tabName);
+                if (tabElement && tabElement.classList) {
+                    tabElement.classList.add('active');
+                    console.log('Activated tab:', tabName);
+                } else {
+                    console.error('Tab element not found:', tabName);
+                }
+                
+                // Add active to clicked button
+                if (event && event.currentTarget && event.currentTarget.classList) {
+                    event.currentTarget.classList.add('active');
+                    console.log('Activated button via currentTarget');
+                } else if (event && event.target && event.target.classList) {
+                    event.target.classList.add('active');
+                    console.log('Activated button via target');
+                } else {
+                    console.warn('Could not find button to activate, using fallback');
+                    // Fallback: mark the correct tab button as active based on tabName
+                    document.querySelectorAll('.tab-btn').forEach(btn => {
+                        const text = btn.textContent || '';
+                        if ((text.includes('Auth') && tabName === 'auth') ||
+                            (text.includes('Shorten') && tabName === 'shorten') ||
+                            (text.includes('My URLs') && tabName === 'myurls')) {
+                            btn.classList.add('active');
+                            console.log('Activated button via fallback');
+                        }
+                    });
+                }
+            } catch (err) {
+                console.error('Error in switchTab:', err);
+            }
+        }
+
+        // Toggle auth form
+        function toggleAuthForm() {
+            document.getElementById('registerForm').style.display = 
+                document.getElementById('registerForm').style.display === 'none' ? 'block' : 'none';
+            document.getElementById('loginForm').style.display = 
+                document.getElementById('loginForm').style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Register
+        async function register() {
+            const regUsername = document.getElementById('regUsername').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value;
+
+            console.log('Register clicked:', { regUsername, email, password });
+
+            if (!regUsername || !email || !password) {
+                showMessage('Please fill in all fields', 'error');
+                return;
+            }
+
+            try {
+                showLoading('auth', true);
+                console.log('Sending request to:', `${API_BASE}/auth/register`);
+                const res = await fetch(`${API_BASE}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: regUsername, email, password })
+                });
+                console.log('Response status:', res.status);
+                const data = await res.json();
+                console.log('Response data:', data);
+
+                if (res.ok) {
+                    accessToken = data.accessToken;
+                    refreshToken = data.refreshToken;
+                    username = data.username;
+                    localStorage.setItem('accessToken', accessToken);
+                    localStorage.setItem('refreshToken', refreshToken);
+                    localStorage.setItem('username', username);
+                    showMessage('✅ Registration successful!', 'success');
+                    updateAuthStatus();
+                } else {
+                    showMessage('❌ ' + data.error, 'error');
+                }
+            } catch (err) {
+                console.error('Fetch error:', err);
+                showMessage('❌ Error: ' + err.message, 'error');
+            } finally {
+                showLoading('auth', false);
+            }
+        }
+
+        // Login
+        async function login() {
+            const loginUsername = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!loginUsername || !password) {
+                showMessage('Please fill in all fields', 'error');
+                return;
+            }
+
+            try {
+                showLoading('auth', true);
+                const res = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: loginUsername, password })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    accessToken = data.accessToken;
+                    refreshToken = data.refreshToken;
+                    username = data.username;
+                    localStorage.setItem('accessToken', accessToken);
+                    localStorage.setItem('refreshToken', refreshToken);
+                    localStorage.setItem('username', username);
+                    showMessage('✅ Login successful!', 'success');
+                    updateAuthStatus();
+                } else {
+                    showMessage('❌ ' + data.error, 'error');
+                }
+            } catch (err) {
+                showMessage('❌ Error: ' + err.message, 'error');
+            } finally {
+                showLoading('auth', false);
+            }
+        }
+
+        // Refresh token
+        async function refreshAccessToken() {
+            if (!refreshToken) {
+                showMessage('❌ No refresh token available', 'error');
+                return;
+            }
+
+            try {
+                showLoading('auth', true);
+                const res = await fetch(`${API_BASE}/auth/refresh`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ refreshToken })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    accessToken = data.accessToken;
+                    localStorage.setItem('accessToken', accessToken);
+                    showMessage('✅ Token refreshed!', 'success');
+                    updateAuthStatus();
+                } else {
+                    showMessage('❌ ' + data.error, 'error');
+                }
+            } catch (err) {
+                showMessage('❌ Error: ' + err.message, 'error');
+            } finally {
+                showLoading('auth', false);
+            }
+        }
+
+        // Logout
+        function logout() {
+            accessToken = null;
+            refreshToken = null;
+            username = null;
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('username');
+            showMessage('✅ Logged out successfully', 'success');
+            updateAuthStatus();
+        }
+
+        // Shorten URL
+        async function shortenUrl() {
+            const longUrl = document.getElementById('longUrl').value.trim();
+            const expiresIn = document.getElementById('expiresIn').value.trim();
+            const customCode = document.getElementById('customCode').value.trim();
+
+            console.log('shortenUrl called with:', { longUrl, expiresIn, customCode, accessToken: accessToken ? 'exists' : 'missing' });
+
+            if (!longUrl) {
+                showMessage('Please enter a long URL', 'error');
+                return;
+            }
+
+            if (!accessToken) {
+                showMessage('Please login first', 'error');
+                return;
+            }
+
+            try {
+                showLoading('shorten', true);
+                const body = { longUrl };
+                if (expiresIn) body.expiresIn = expiresIn;
+                if (customCode) body.customCode = customCode;
+
+                console.log('Sending shorten request:', body);
+                const res = await fetch(`${API_BASE}/shorten`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify(body)
+                });
+                console.log('Response status:', res.status);
+                const data = await res.json();
+                console.log('Response data:', data);
+
+                if (res.ok) {
+                    currentShortUrl = data.shortUrl;
+                    console.log('Short URL created:', currentShortUrl);
+                    const result = document.getElementById('shortenResult');
+                    const content = document.getElementById('shortenResultContent');
+                    console.log('Result element:', result);
+                    console.log('Content element:', content);
+                    
+                    if (!result || !content) {
+                        console.error('Result or content element not found!');
+                        showMessage('❌ UI error - could not display result', 'error');
+                        return;
+                    }
+                    
+                    content.innerHTML = `
+                        ✅ Short URL created!<br/>
+                        <strong style="font-size: 16px; color: #2e7d32;">${data.shortCode}</strong><br/>
+                        <small>${data.shortUrl}</small><br/>
+                        ${data.expiresAt ? `<small>Expires: ${new Date(data.expiresAt).toLocaleString()}</small>` : ''}
+                    `;
+                    result.style.display = 'block';
+                    document.getElementById('shortenForm').style.display = 'none';
+                    console.log('Result display updated');
+                } else {
+                    console.error('Error response:', data);
+                    showMessage('❌ ' + (data.error || 'Unknown error'), 'error');
+                }
+            } catch (err) {
+                console.error('Fetch error:', err);
+                showMessage('❌ Error: ' + err.message, 'error');
+            } finally {
+                showLoading('shorten', false);
+            }
+        }
+
+        // Copy to clipboard
+        function copyToClipboard() {
+            navigator.clipboard.writeText(currentShortUrl).then(() => {
+                showMessage('✅ Copied to clipboard!', 'success');
+            });
+        }
+
+        // Clear shorten form
+        function clearShortenForm() {
+            document.getElementById('longUrl').value = '';
+            document.getElementById('expiresIn').value = '';
+            document.getElementById('customCode').value = '';
+            document.getElementById('shortenForm').style.display = 'block';
+            document.getElementById('shortenResult').style.display = 'none';
+        }
+
+        // Load my URLs
+        async function loadMyUrls() {
+            if (!accessToken) {
+                showMessage('Please login first', 'error');
+                return;
+            }
+
+            try {
+                showLoading('myurls', true);
+                const res = await fetch(`${API_BASE}/my-urls`, {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    const list = document.getElementById('urlList');
+                    if (data.urls.length === 0) {
+                        list.innerHTML = '<li style="color: #999; font-size: 13px;">No URLs yet</li>';
+                    } else {
+                        list.innerHTML = data.urls.map(url => `
+                            <li class="url-item">
+                                <div class="url-item-code">🔗 ${url.shortCode}</div>
+                                <div class="url-item-original">${url.originalUrl}</div>
+                                <div class="stats">👁️ ${url.clicks} clicks | 📅 ${new Date(url.createdAt).toLocaleDateString()}</div>
+                                <div class="url-item-actions">
+                                    <button onclick="openUrl('${url.shortCode}')">Visit</button>
+                                    <button onclick="copyUrl('${url.shortUrl}')">Copy</button>
+                                    <button onclick="deleteUrl('${url.shortCode}')">Delete</button>
+                                </div>
+                            </li>
+                        `).join('');
+                    }
+                } else {
+                    showMessage('❌ ' + data.error, 'error');
+                }
+            } catch (err) {
+                showMessage('❌ Error: ' + err.message, 'error');
+            } finally {
+                showLoading('myurls', false);
+            }
+        }
+
+        // Open URL
+        function openUrl(code) {
+            window.open(`${API_BASE}/${code}`, '_blank');
+        }
+
+        // Copy URL
+        function copyUrl(url) {
+            navigator.clipboard.writeText(url).then(() => {
+                showMessage('✅ Copied!', 'success');
+            });
+        }
+
+        // Delete URL
+        async function deleteUrl(code) {
+            if (!confirm('Delete this URL?')) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/shorten/${code}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    showMessage('✅ URL deleted!', 'success');
+                    loadMyUrls();
+                } else {
+                    showMessage('❌ ' + data.error, 'error');
+                }
+            } catch (err) {
+                showMessage('❌ Error: ' + err.message, 'error');
+            }
+        }
+
+        // Show message
+        function showMessage(msg, type) {
+            const el = document.getElementById('message');
+            el.className = type;
+            el.textContent = msg;
+            el.style.display = 'block';
+            setTimeout(() => el.style.display = 'none', 4000);
+        }
+
+        // Show/hide loading
+        function showLoading(tab, show) {
+            document.getElementById(tab + 'Loading').classList.toggle('show', show);
+        }
+    </script>
+</body>
+</html>
