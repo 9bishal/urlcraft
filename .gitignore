@@ -28,3 +28,10 @@ yarn-debug.log*
 # Build
 dist/
 build/
+
+# Documentation (keep locally only, not in GitHub)
+*.md
+!.github/
+
+# Test files
+test-*.js
