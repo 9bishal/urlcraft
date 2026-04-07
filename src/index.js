@@ -1,9 +1,11 @@
 const express = require('express');
+const swaggerUi = require('swagger-ui-express');
 const { config, isRedisConnected } = require('./config');
 const { shortenRateLimiter } = require('./middleware');
 const routes = require('./routes');
 const authRoutes = require('./auth-routes');
 const healthRoutes = require('./health-routes');
+const swaggerSpecs = require('./swagger');
 const { initializeAuthTables } = require('./init-auth-db');
 
 const app = express();
@@ -34,6 +36,13 @@ app.use((req, res, next) => {
 // Middleware
 app.use(express.json());
 app.use(express.static('frontend'));
+
+// Swagger UI
+app.use('/api-docs', swaggerUi.serve);
+app.get('/api-docs', swaggerUi.setup(swaggerSpecs, { 
+  customCss: '.swagger-ui { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }',
+  customSiteTitle: 'URLCraft API Documentation',
+}));
 
 // Rate limiting for specific endpoints
 app.use('/shorten', shortenRateLimiter);
@@ -71,5 +80,6 @@ app.listen(PORT, HOST, () => {
   console.log(`📝 Features: JWT Auth, Refresh Tokens, Short URLs, Redis Caching, Rate Limiting, Health Checks`);
   console.log(`💾 Database: PostgreSQL | 🔐 Auth: JWT + Refresh Tokens | 🔴 Cache: ${isRedisConnected() ? '✅ Redis' : '⚠️ Disabled'}`);
   console.log(`📊 Health: http://${HOST}:${PORT}/health | Metrics: http://${HOST}:${PORT}/metrics`);
+  console.log(`📚 API Docs: http://${HOST}:${PORT}/api-docs`);
   console.log(`🌍 Environment: ${config.nodeEnv}\n`);
 });

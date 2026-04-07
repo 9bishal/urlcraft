@@ -4,8 +4,16 @@ const { pool, isRedisConnected, getRedisClient } = require('./config');
 const router = express.Router();
 
 /**
- * Health check endpoint
- * Returns the health status of the application and its dependencies
+ * @swagger
+ * /health/health:
+ *   get:
+ *     summary: Full health check
+ *     tags: [Health]
+ *     responses:
+ *       200:
+ *         description: Application and dependencies are healthy
+ *       503:
+ *         description: Application or dependencies are down
  */
 router.get('/health', async (req, res) => {
   try {
@@ -58,16 +66,30 @@ router.get('/health', async (req, res) => {
 });
 
 /**
- * Liveness probe endpoint (for Kubernetes, Docker, etc.)
- * Returns 200 if the application is running
+ * @swagger
+ * /health/live:
+ *   get:
+ *     summary: Liveness probe
+ *     tags: [Health]
+ *     responses:
+ *       200:
+ *         description: Application is running
  */
 router.get('/live', (req, res) => {
   res.status(200).json({ status: 'alive', timestamp: new Date().toISOString() });
 });
 
 /**
- * Readiness probe endpoint (for Kubernetes, Docker, etc.)
- * Returns 200 if the application is ready to accept traffic
+ * @swagger
+ * /health/ready:
+ *   get:
+ *     summary: Readiness probe
+ *     tags: [Health]
+ *     responses:
+ *       200:
+ *         description: Application is ready to accept traffic
+ *       503:
+ *         description: Application is not ready
  */
 router.get('/ready', async (req, res) => {
   try {
@@ -80,8 +102,14 @@ router.get('/ready', async (req, res) => {
 });
 
 /**
- * Metrics endpoint for monitoring
- * Returns basic application metrics
+ * @swagger
+ * /health/metrics:
+ *   get:
+ *     summary: Application metrics
+ *     tags: [Health]
+ *     responses:
+ *       200:
+ *         description: Application metrics including uptime and URL counts
  */
 router.get('/metrics', async (req, res) => {
   try {

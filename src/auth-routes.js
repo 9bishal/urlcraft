@@ -26,6 +26,49 @@ const validateUsername = (username) => {
   return /^[a-zA-Z0-9_-]{3,30}$/.test(username);
 };
 
+/**
+ * @swagger
+ * /auth/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - email
+ *               - password
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: Username (3-30 chars, alphanumeric, dash, underscore)
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 description: At least 8 characters
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 accessToken: { type: string }
+ *                 refreshToken: { type: string }
+ *                 username: { type: string }
+ *       400:
+ *         description: Validation error
+ *       409:
+ *         description: User already exists
+ */
 // POST /auth/register
 router.post('/register', async (req, res) => {
   const { username, email, password } = req.body;
@@ -92,6 +135,40 @@ router.post('/register', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     summary: Login user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - password
+ *             properties:
+ *               username: { type: string }
+ *               password: { type: string, format: password }
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 accessToken: { type: string }
+ *                 refreshToken: { type: string }
+ *                 username: { type: string }
+ *       400:
+ *         description: Invalid credentials
+ *       401:
+ *         description: Unauthorized
+ */
 // POST /auth/login
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
@@ -141,6 +218,36 @@ router.post('/login', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /auth/refresh:
+ *   post:
+ *     summary: Refresh access token
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - refreshToken
+ *             properties:
+ *               refreshToken: { type: string }
+ *     responses:
+ *       200:
+ *         description: Token refreshed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 accessToken: { type: string }
+ *       400:
+ *         description: Invalid refresh token
+ *       401:
+ *         description: Unauthorized
+ */
 // POST /auth/refresh
 router.post('/refresh', async (req, res) => {
   const { refreshToken } = req.body;
@@ -177,6 +284,37 @@ router.post('/refresh', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /auth/logout:
+ *   post:
+ *     summary: Logout user
+ *     tags: [Auth]
+ *     description: Logout and revoke the refresh token to invalidate all sessions
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               refreshToken:
+ *                 type: string
+ *                 description: Optional refresh token to revoke
+ *     responses:
+ *       200:
+ *         description: Logout successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message: { type: string }
+ *       400:
+ *         description: Invalid request
+ *       500:
+ *         description: Failed to logout
+ */
 // POST /auth/logout
 router.post('/logout', async (req, res) => {
   const { refreshToken } = req.body;

@@ -6,6 +6,40 @@ const { authenticateJWT, checkUrlOwnership } = require('./auth-middleware');
 const router = express.Router();
 const PORT = 3000;
 
+/**
+ * @swagger
+ * /shorten:
+ *   post:
+ *     summary: Create a short URL
+ *     tags: [URLs]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - longUrl
+ *             properties:
+ *               longUrl:
+ *                 type: string
+ *                 format: uri
+ *               customCode:
+ *                 type: string
+ *                 description: Optional custom short code
+ *               expiresIn:
+ *                 type: string
+ *                 description: e.g., 24h, 7d, 30m
+ *     responses:
+ *       201:
+ *         description: Short URL created
+ *       400:
+ *         description: Invalid URL
+ *       401:
+ *         description: Unauthorized
+ */
 // POST /shorten (Requires authentication)
 router.post('/shorten', authenticateJWT, async (req, res) => {
   const { longUrl, customCode, expiresIn } = req.body;
@@ -44,6 +78,39 @@ router.post('/shorten', authenticateJWT, async (req, res) => {
 });
 
 // POST /shorten-bulk (Requires authentication)
+/**
+ * @swagger
+ * /shorten-bulk:
+ *   post:
+ *     summary: Create multiple short URLs at once
+ *     tags: [URLs]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - urls
+ *             properties:
+ *               urls:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     longUrl: { type: string, format: uri }
+ *                     customCode: { type: string }
+ *                     expiresIn: { type: string }
+ *     responses:
+ *       201:
+ *         description: Bulk URLs created
+ *       400:
+ *         description: Invalid request
+ *       401:
+ *         description: Unauthorized
+ */
 router.post('/shorten-bulk', authenticateJWT, async (req, res) => {
   const { urls } = req.body;
   const userId = req.user.userId;
@@ -106,6 +173,29 @@ router.post('/shorten-bulk', authenticateJWT, async (req, res) => {
 });
 
 // GET /all-urls
+/**
+ * @swagger
+ * /all-urls:
+ *   get:
+ *     summary: Get all short URLs (public list)
+ *     tags: [URLs]
+ *     description: Retrieve a list of all short URLs in the system
+ *     responses:
+ *       200:
+ *         description: List of all URLs
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 total: { type: integer }
+ *                 urls:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       500:
+ *         description: Failed to fetch URLs
+ */
 router.get('/all-urls', async (req, res) => {
   try {
     const result = await pool.query(
@@ -133,6 +223,29 @@ router.get('/all-urls', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /my-urls:
+ *   get:
+ *     summary: Get user's short URLs
+ *     tags: [URLs]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of user's URLs
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 urls:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       401:
+ *         description: Unauthorized
+ */
 // GET /my-urls (Authenticated - List user's URLs)
 router.get('/my-urls', authenticateJWT, async (req, res) => {
   const userId = req.user.userId;
@@ -165,6 +278,30 @@ router.get('/my-urls', authenticateJWT, async (req, res) => {
 });
 
 // GET /:shortCode
+/**
+ * @swagger
+ * /{shortCode}:
+ *   get:
+ *     summary: Redirect to original URL
+ *     tags: [URLs]
+ *     description: Follow a short code to get redirected to the original URL
+ *     parameters:
+ *       - in: path
+ *         name: shortCode
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The short code to redirect from
+ *     responses:
+ *       301:
+ *         description: Redirect to original URL
+ *       404:
+ *         description: Short URL not found
+ *       410:
+ *         description: Short URL has expired
+ *       500:
+ *         description: Failed to redirect
+ */
 router.get('/:shortCode', async (req, res) => {
   const { shortCode } = req.params;
 
@@ -203,6 +340,41 @@ router.get('/:shortCode', async (req, res) => {
 });
 
 // GET /stats/:shortCode
+/**
+ * @swagger
+ * /stats/{shortCode}:
+ *   get:
+ *     summary: Get statistics for a short URL
+ *     tags: [URLs]
+ *     description: Retrieve click count, creation date, and other stats for a short URL
+ *     parameters:
+ *       - in: path
+ *         name: shortCode
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The short code to get stats for
+ *     responses:
+ *       200:
+ *         description: URL statistics retrieved
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 shortCode: { type: string }
+ *                 shortUrl: { type: string }
+ *                 originalUrl: { type: string }
+ *                 clicks: { type: integer }
+ *                 isCustom: { type: boolean }
+ *                 createdAt: { type: string, format: date-time }
+ *                 expiresAt: { type: string, format: date-time }
+ *                 isExpired: { type: boolean }
+ *       404:
+ *         description: Short URL not found
+ *       500:
+ *         description: Failed to fetch stats
+ */
 router.get('/stats/:shortCode', async (req, res) => {
   const { shortCode } = req.params;
 
@@ -245,6 +417,28 @@ router.get('/stats/:shortCode', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /shorten/{shortCode}:
+ *   delete:
+ *     summary: Delete a short URL
+ *     tags: [URLs]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: shortCode
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: URL deleted
+ *       404:
+ *         description: URL not found
+ *       401:
+ *         description: Unauthorized
+ */
 // DELETE /shorten/:shortCode
 router.delete('/shorten/:shortCode', authenticateJWT, async (req, res) => {
   const { shortCode } = req.params;

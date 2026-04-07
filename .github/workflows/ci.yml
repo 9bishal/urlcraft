@@ -15,7 +15,7 @@ jobs:
         image: postgres:15
         env:
           POSTGRES_USER: urlcraft
-          POSTGRES_PASSWORD: testpass
+          POSTGRES_PASSWORD: ${{ secrets.TEST_DB_PASSWORD || 'testpass' }}
           POSTGRES_DB: urlcraft_test
         options: >-
           --health-cmd pg_isready
@@ -58,7 +58,7 @@ jobs:
           DB_HOST: localhost
           DB_PORT: 5432
           DB_USER: urlcraft
-          DB_PASSWORD: testpass
+          DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD || 'testpass' }}
           DB_NAME: urlcraft_test
           REDIS_URL: redis://localhost:6379
 
@@ -69,7 +69,7 @@ jobs:
           DB_HOST: localhost
           DB_PORT: 5432
           DB_USER: urlcraft
-          DB_PASSWORD: testpass
+          DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD || 'testpass' }}
           DB_NAME: urlcraft_test
           REDIS_URL: redis://localhost:6379
 
@@ -80,7 +80,7 @@ jobs:
           DB_HOST: localhost
           DB_PORT: 5432
           DB_USER: urlcraft
-          DB_PASSWORD: testpass
+          DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD || 'testpass' }}
           DB_NAME: urlcraft_test
           REDIS_URL: redis://localhost:6379
 
@@ -92,7 +92,7 @@ jobs:
           DB_HOST: localhost
           DB_PORT: 5432
           DB_USER: urlcraft
-          DB_PASSWORD: testpass
+          DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD || 'testpass' }}
           DB_NAME: urlcraft_test
           REDIS_URL: redis://localhost:6379
 

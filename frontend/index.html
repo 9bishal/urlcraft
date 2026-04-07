@@ -12,21 +12,21 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             padding: 20px;
         }
 
         .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .card {
             background: white;
-            border-radius: 12px;
+            border-radius: 10px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 500px;
             overflow: hidden;
         }
 
@@ -38,7 +38,7 @@
         }
 
         .header h1 {
-            font-size: 28px;
+            font-size: 32px;
             margin-bottom: 5px;
         }
 
@@ -51,27 +51,70 @@
             padding: 30px;
         }
 
-        .tab-buttons {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #eee;
+        .message {
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none;
+            font-size: 14px;
         }
 
-        .tab-btn {
-            padding: 10px 15px;
-            border: none;
-            background: none;
-            cursor: pointer;
+        .message.show.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #2e7d32;
+            display: block;
+        }
+
+        .message.show.error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #c62828;
+            display: block;
+        }
+
+        .auth-status {
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 15px;
             font-size: 14px;
+            background: #f5f5f5;
+        }
+
+        .auth-status.logged-in {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .auth-status.logged-out {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
             font-weight: 500;
             color: #666;
-            border-bottom: 2px solid transparent;
-            margin-bottom: -1px;
             transition: all 0.3s;
+            background: none;
+            border: none;
+            font-size: 14px;
         }
 
-        .tab-btn.active {
+        .tab:hover {
+            color: #667eea;
+        }
+
+        .tab.active {
             color: #667eea;
             border-bottom-color: #667eea;
         }
@@ -90,17 +133,17 @@
 
         label {
             display: block;
-            margin-bottom: 5px;
             font-weight: 500;
             color: #333;
+            margin-bottom: 5px;
             font-size: 14px;
         }
 
         input, textarea {
             width: 100%;
-            padding: 10px 12px;
+            padding: 10px;
             border: 1px solid #ddd;
-            border-radius: 6px;
+            border-radius: 5px;
             font-size: 14px;
             font-family: inherit;
         }
@@ -117,15 +160,14 @@
         }
 
         .button {
-            width: 100%;
-            padding: 12px;
+            padding: 10px 20px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
+            border-radius: 5px;
             cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
             transition: all 0.3s;
         }
 
@@ -141,49 +183,28 @@
         .button.secondary {
             background: #f0f0f0;
             color: #333;
-            margin-top: 10px;
+            margin-left: 10px;
         }
 
         .button.secondary:hover {
             background: #e0e0e0;
         }
 
-        .auth-status {
-            background: #f5f5f5;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-size: 13px;
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
         }
 
-        .auth-status.logged-in {
-            background: #e8f5e9;
-            color: #2e7d32;
+        .button-group .button {
+            flex: 1;
         }
 
-        .auth-status.logged-out {
-            background: #ffebee;
-            color: #c62828;
-        }
-
-        .success {
-            background: #e8f5e9;
-            color: #2e7d32;
-            padding: 12px;
-            border-radius: 6px;
+        .section-title {
+            font-size: 20px;
+            color: #333;
             margin-bottom: 15px;
-            font-size: 13px;
-            border-left: 4px solid #2e7d32;
-        }
-
-        .error {
-            background: #ffebee;
-            color: #c62828;
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            font-size: 13px;
-            border-left: 4px solid #c62828;
+            font-weight: 600;
         }
 
         .url-list {
@@ -192,33 +213,39 @@
 
         .url-item {
             background: #f5f5f5;
-            padding: 12px;
-            border-radius: 6px;
+            padding: 15px;
+            border-radius: 5px;
             margin-bottom: 10px;
-            font-size: 13px;
+            border-left: 4px solid #667eea;
         }
 
-        .url-item-code {
+        .url-code {
             font-weight: 600;
             color: #667eea;
             font-family: 'Courier New', monospace;
+            font-size: 16px;
             margin-bottom: 5px;
         }
 
-        .url-item-original {
+        .url-original {
             color: #666;
             word-break: break-all;
-            margin-bottom: 5px;
-            font-size: 12px;
+            font-size: 13px;
+            margin-bottom: 8px;
         }
 
-        .url-item-actions {
+        .url-stats {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        .url-actions {
             display: flex;
             gap: 8px;
-            margin-top: 8px;
         }
 
-        .url-item-actions button {
+        .url-actions button {
             flex: 1;
             padding: 6px;
             border: 1px solid #ddd;
@@ -229,379 +256,271 @@
             transition: all 0.2s;
         }
 
-        .url-item-actions button:hover {
-            background: #f0f0f0;
+        .url-actions button:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
         }
 
         .loading {
-            display: none;
             text-align: center;
-            padding: 10px;
             color: #667eea;
-            font-size: 13px;
+            font-size: 14px;
+            padding: 10px;
+            display: none;
         }
 
         .loading.show {
             display: block;
         }
 
-        .token-display {
-            background: #f5f5f5;
-            padding: 10px;
-            border-radius: 6px;
-            margin-top: 10px;
-            word-break: break-all;
-            font-family: 'Courier New', monospace;
-            font-size: 11px;
-            color: #666;
-            max-height: 100px;
-            overflow-y: auto;
-        }
-
-        .stats {
-            font-size: 13px;
-            color: #666;
-            margin-top: 5px;
+        hr {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 20px 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🔗 URLCraft</h1>
-            <p>Secure URL Shortener with JWT Authentication</p>
-        </div>
-
-        <div class="content">
-            <!-- Auth Status -->
-            <div id="authStatus" class="auth-status logged-out">
-                Not logged in
+        <div class="card">
+            <div class="header">
+                <h1>🔗 URLCraft</h1>
+                <p>Secure URL Shortener with JWT Authentication</p>
             </div>
 
-            <!-- Messages -->
-            <div id="message" style="display: none;"></div>
+            <div class="content">
+                <!-- Auth Status -->
+                <div id="authStatus" class="auth-status logged-out">
+                    ❌ Not logged in
+                </div>
 
-            <!-- Tab Buttons -->
-            <div class="tab-buttons">
-                <button class="tab-btn active" onclick="switchTab('auth', event)">Auth</button>
-                <button class="tab-btn" onclick="switchTab('shorten', event)">Shorten</button>
-                <button class="tab-btn" onclick="switchTab('myurls', event)">My URLs</button>
-            </div>
+                <!-- Message -->
+                <div id="message" class="message"></div>
 
-            <!-- AUTH TAB -->
-            <div id="auth" class="tab-content active">
-                <div id="authForm">
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('auth')">🔐 Auth</button>
+                    <button class="tab" onclick="switchTab('shorten')">✂️ Shorten</button>
+                    <button class="tab" onclick="switchTab('myurls')">📋 My URLs</button>
+                </div>
+
+                <!-- AUTH TAB -->
+                <div id="auth" class="tab-content active">
                     <!-- Register Form -->
                     <div id="registerForm">
-                        <h3 style="margin-bottom: 15px; color: #333;">Create Account</h3>
-                        
+                        <div class="section-title">Create Account</div>
                         <div class="form-group">
                             <label>Username</label>
-                            <input type="text" id="regUsername" placeholder="alice_dev" />
+                            <input type="text" id="regUsername" placeholder="john_dev">
                         </div>
-
                         <div class="form-group">
                             <label>Email</label>
-                            <input type="email" id="regEmail" placeholder="alice@example.com" />
+                            <input type="email" id="regEmail" placeholder="john@example.com">
                         </div>
-
                         <div class="form-group">
                             <label>Password (min 8 chars)</label>
-                            <input type="password" id="regPassword" placeholder="SecurePass123!" />
+                            <input type="password" id="regPassword" placeholder="SecurePass123!">
                         </div>
-
-                        <button class="button" onclick="register()">Register</button>
-                        
-                        <button class="button secondary" onclick="toggleAuthForm()">
-                            Have an account? Login
-                        </button>
+                        <div class="button-group">
+                            <button class="button" onclick="handleRegister()">Register</button>
+                            <button class="button secondary" onclick="toggleAuthForm()">Login instead</button>
+                        </div>
                     </div>
 
                     <!-- Login Form -->
                     <div id="loginForm" style="display: none;">
-                        <h3 style="margin-bottom: 15px; color: #333;">Login</h3>
-                        
+                        <div class="section-title">Login</div>
                         <div class="form-group">
                             <label>Username</label>
-                            <input type="text" id="loginUsername" placeholder="alice_dev" />
+                            <input type="text" id="loginUsername" placeholder="john_dev">
                         </div>
-
                         <div class="form-group">
                             <label>Password</label>
-                            <input type="password" id="loginPassword" placeholder="SecurePass123!" />
+                            <input type="password" id="loginPassword" placeholder="SecurePass123!">
                         </div>
-
-                        <button class="button" onclick="login()">Login</button>
-                        
-                        <button class="button secondary" onclick="toggleAuthForm()">
-                            New user? Register
-                        </button>
+                        <div class="button-group">
+                            <button class="button" onclick="handleLogin()">Login</button>
+                            <button class="button secondary" onclick="toggleAuthForm()">Register instead</button>
+                        </div>
                     </div>
 
                     <!-- Logged In View -->
                     <div id="loggedInView" style="display: none;">
-                        <h3 style="margin-bottom: 15px; color: #333;">Session</h3>
-                        
-                        <div class="auth-status logged-in" id="userInfo">
-                            Logged in as: <strong id="currentUsername"></strong>
+                        <div class="section-title">Session Info</div>
+                        <div class="auth-status logged-in">
+                            ✅ Logged in as <strong id="currentUsername"></strong>
                         </div>
+                        <div class="button-group">
+                            <button class="button" onclick="handleRefreshToken()">🔄 Refresh Token</button>
+                            <button class="button secondary" onclick="handleLogout()">Logout</button>
+                        </div>
+                    </div>
 
+                    <div class="loading" id="authLoading">⏳ Loading...</div>
+                </div>
+
+                <!-- SHORTEN TAB -->
+                <div id="shorten" class="tab-content">
+                    <div id="shortenGuard" style="display: none;">
+                        <p style="color: #c62828; margin-bottom: 15px;">⚠️ Please login first</p>
+                    </div>
+
+                    <div id="shortenForm">
+                        <div class="section-title">Create Short URL</div>
                         <div class="form-group">
-                            <label>Access Token (expires in 15 min)</label>
-                            <div class="token-display" id="accessTokenDisplay"></div>
+                            <label>Long URL *</label>
+                            <input type="url" id="longUrl" placeholder="https://example.com/very/long/url">
                         </div>
-
-                        <button class="button secondary" onclick="refreshAccessToken()" style="background: #fff3cd; color: #856404;">
-                            🔄 Refresh Access Token
-                        </button>
-
-                        <button class="button secondary" onclick="logout()" style="background: #ffebee; color: #c62828;">
-                            Logout
-                        </button>
-                    </div>
-                </div>
-
-                <div class="loading" id="authLoading">Loading...</div>
-            </div>
-
-            <!-- SHORTEN TAB -->
-            <div id="shorten" class="tab-content">
-                <h3 style="margin-bottom: 15px; color: #333;">Create Short URL</h3>
-
-                <div id="shortenGuard" style="display: none;">
-                    <p style="color: #c62828; font-size: 14px; margin-bottom: 15px;">
-                        ⚠️ Please login first to create URLs
-                    </p>
-                </div>
-
-                <div id="shortenForm">
-                    <div class="form-group">
-                        <label>Long URL</label>
-                        <input type="url" id="longUrl" placeholder="https://example.com/very/long/url" />
+                        <div class="form-group">
+                            <label>Custom Code (optional)</label>
+                            <input type="text" id="customCode" placeholder="my-link">
+                        </div>
+                        <div class="form-group">
+                            <label>Expires In (optional)</label>
+                            <input type="text" id="expiresIn" placeholder="e.g., 24h, 7d, 30m">
+                        </div>
+                        <button class="button" onclick="handleShortenUrl()">Create Short URL</button>
                     </div>
 
-                    <div class="form-group">
-                        <label>Expiration (optional)</label>
-                        <input type="text" id="expiresIn" placeholder="e.g., 24h, 7d, 30m" />
+                    <div id="shortenResult" style="display: none;">
+                        <hr>
+                        <div class="section-title">✅ Short URL Created!</div>
+                        <div id="resultContent"></div>
+                        <div class="button-group">
+                            <button class="button" onclick="copyShortenUrl()">📋 Copy</button>
+                            <button class="button secondary" onclick="resetShortenForm()">Create Another</button>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>Custom Code (optional)</label>
-                        <input type="text" id="customCode" placeholder="my-link" />
+                    <div class="loading" id="shortenLoading">⏳ Creating...</div>
+                </div>
+
+                <!-- MY URLS TAB -->
+                <div id="myurls" class="tab-content">
+                    <div id="myUrlsGuard" style="display: none;">
+                        <p style="color: #c62828; margin-bottom: 15px;">⚠️ Please login first</p>
                     </div>
 
-                    <button class="button" onclick="shortenUrl()">Create Short URL</button>
-
-                    <div id="shortenResult" style="margin-top: 15px; display: none;">
-                        <div class="success" id="shortenResultContent"></div>
-                        <button class="button secondary" onclick="copyToClipboard()" id="copyBtn">
-                            📋 Copy Short URL
-                        </button>
-                        <button class="button secondary" onclick="clearShortenForm()">
-                            Create Another
-                        </button>
+                    <div id="myUrlsContent">
+                        <div class="section-title">Your Short URLs</div>
+                        <button class="button secondary" onclick="handleLoadMyUrls()">🔄 Load URLs</button>
+                        <ul class="url-list" id="urlList">
+                            <li style="color: #999; text-align: center; padding: 20px;">No URLs yet</li>
+                        </ul>
                     </div>
+
+                    <div class="loading" id="myUrlsLoading">⏳ Loading...</div>
                 </div>
-
-                <div class="loading" id="shortenLoading">Creating...</div>
-            </div>
-
-            <!-- MY URLS TAB -->
-            <div id="myurls" class="tab-content">
-                <h3 style="margin-bottom: 15px; color: #333;">Your Short URLs</h3>
-
-                <div id="myUrlsGuard" style="display: none;">
-                    <p style="color: #c62828; font-size: 14px; margin-bottom: 15px;">
-                        ⚠️ Please login to view your URLs
-                    </p>
-                </div>
-
-                <div id="myUrlsContent">
-                    <button class="button secondary" onclick="loadMyUrls()" style="margin-bottom: 15px;">
-                        🔄 Load My URLs
-                    </button>
-
-                    <ul class="url-list" id="urlList">
-                        <li style="color: #999; font-size: 13px;">No URLs yet. Create one in the Shorten tab!</li>
-                    </ul>
-                </div>
-
-                <div class="loading" id="myUrlsLoading">Loading...</div>
             </div>
         </div>
     </div>
 
     <script>
-        // Global error handler
-        window.addEventListener('error', (event) => {
-            console.error('Global error caught:', event.error);
-            event.preventDefault();
-        });
-
         const API_BASE = 'http://localhost:3000';
-        let accessToken = null;
-        let refreshToken = null;
-        let username = null;
+
+        let accessToken = localStorage.getItem('accessToken');
+        let refreshToken = localStorage.getItem('refreshToken');
+        let username = localStorage.getItem('username');
         let currentShortUrl = '';
 
-        // Load from localStorage
-        function loadAuthState() {
-            try {
-                accessToken = localStorage.getItem('accessToken');
-                refreshToken = localStorage.getItem('refreshToken');
-                username = localStorage.getItem('username');
-                console.log('Auth state loaded:', { accessToken: !!accessToken, username });
-            } catch (e) {
-                console.warn('localStorage access failed:', e);
+        // Initialize
+        document.addEventListener('DOMContentLoaded', updateAuthUI);
+
+        // ==================== UTILITY FUNCTIONS ====================
+
+        function showMessage(msg, type = 'info') {
+            const el = document.getElementById('message');
+            el.textContent = msg;
+            el.className = 'message show ' + type;
+            setTimeout(() => {
+                el.className = 'message';
+            }, 4000);
+        }
+
+        function setLoading(tabId, show) {
+            const el = document.getElementById(tabId + 'Loading');
+            if (el) {
+                el.classList.toggle('show', show);
             }
         }
 
-        // Initialize - only call on DOMContentLoaded
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                console.log('DOMContentLoaded event fired');
-                loadAuthState();
-                updateAuthStatus();
-            });
-        } else {
-            console.log('DOM already loaded, initializing immediately');
-            loadAuthState();
-            updateAuthStatus();
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+
+            // Show selected
+            const tabEl = document.getElementById(tabName);
+            if (tabEl) {
+                tabEl.classList.add('active');
+            }
+
+            // Mark button as active
+            event.target.classList.add('active');
         }
 
-        // Update auth status
-        function updateAuthStatus() {
-            try {
-                console.log('updateAuthStatus called');
-                const statusEl = document.getElementById('authStatus');
-                const authForm = document.getElementById('authForm');
-                const loggedInView = document.getElementById('loggedInView');
-                const registerForm = document.getElementById('registerForm');
-                const shortenGuard = document.getElementById('shortenGuard');
-                const shortenForm = document.getElementById('shortenForm');
-                const myUrlsGuard = document.getElementById('myUrlsGuard');
-                const myUrlsContent = document.getElementById('myUrlsContent');
+        // ==================== AUTH FUNCTIONS ====================
 
-                if (!statusEl || !authForm) {
-                    console.error('Required elements not found, retrying in 100ms');
-                    setTimeout(() => updateAuthStatus(), 100);
-                    return;
-                }
+        function updateAuthUI() {
+            const status = document.getElementById('authStatus');
+            const regForm = document.getElementById('registerForm');
+            const logForm = document.getElementById('loginForm');
+            const loggedIn = document.getElementById('loggedInView');
+            const shortenGuard = document.getElementById('shortenGuard');
+            const shortenForm = document.getElementById('shortenForm');
+            const myUrlsGuard = document.getElementById('myUrlsGuard');
+            const myUrlsContent = document.getElementById('myUrlsContent');
 
-                if (accessToken && username) {
-                    statusEl.className = 'auth-status logged-in';
-                    statusEl.innerHTML = `✅ Logged in as <strong>${username}</strong>`;
-                    authForm.style.display = 'none';
-                    loggedInView.style.display = 'block';
-                    document.getElementById('currentUsername').textContent = username;
-                    document.getElementById('accessTokenDisplay').textContent = accessToken.substring(0, 50) + '...';
-                    shortenGuard.style.display = 'none';
-                    shortenForm.style.display = 'block';
-                    myUrlsGuard.style.display = 'none';
-                    myUrlsContent.style.display = 'block';
-                    console.log('User logged in state set');
-                } else {
-                    statusEl.className = 'auth-status logged-out';
-                    statusEl.innerHTML = '❌ Not logged in';
-                    authForm.style.display = 'block';
-                    loggedInView.style.display = 'none';
-                    registerForm.style.display = 'block';
-                    shortenGuard.style.display = 'block';
-                    shortenForm.style.display = 'none';
-                    myUrlsGuard.style.display = 'block';
-                    myUrlsContent.style.display = 'none';
-                    console.log('User logged out state set');
-                }
-            } catch (err) {
-                console.error('Error in updateAuthStatus:', err);
+            if (accessToken && username) {
+                status.className = 'auth-status logged-in';
+                status.textContent = `✅ Logged in as ${username}`;
+                regForm.style.display = 'none';
+                logForm.style.display = 'none';
+                loggedIn.style.display = 'block';
+                document.getElementById('currentUsername').textContent = username;
+                shortenGuard.style.display = 'none';
+                shortenForm.style.display = 'block';
+                myUrlsGuard.style.display = 'none';
+                myUrlsContent.style.display = 'block';
+            } else {
+                status.className = 'auth-status logged-out';
+                status.textContent = '❌ Not logged in';
+                regForm.style.display = 'block';
+                logForm.style.display = 'none';
+                loggedIn.style.display = 'none';
+                shortenGuard.style.display = 'block';
+                shortenForm.style.display = 'none';
+                myUrlsGuard.style.display = 'block';
+                myUrlsContent.style.display = 'none';
             }
         }
 
-        // Switch tabs
-        function switchTab(tabName, event) {
-            console.log('switchTab called:', { tabName, eventExists: !!event });
-            
-            try {
-                // Remove active from all content tabs
-                document.querySelectorAll('.tab-content').forEach(el => {
-                    if (el && el.classList) {
-                        el.classList.remove('active');
-                    }
-                });
-                
-                // Remove active from all buttons
-                document.querySelectorAll('.tab-btn').forEach(el => {
-                    if (el && el.classList) {
-                        el.classList.remove('active');
-                    }
-                });
-                
-                // Add active to selected tab content
-                const tabElement = document.getElementById(tabName);
-                if (tabElement && tabElement.classList) {
-                    tabElement.classList.add('active');
-                    console.log('Activated tab:', tabName);
-                } else {
-                    console.error('Tab element not found:', tabName);
-                }
-                
-                // Add active to clicked button
-                if (event && event.currentTarget && event.currentTarget.classList) {
-                    event.currentTarget.classList.add('active');
-                    console.log('Activated button via currentTarget');
-                } else if (event && event.target && event.target.classList) {
-                    event.target.classList.add('active');
-                    console.log('Activated button via target');
-                } else {
-                    console.warn('Could not find button to activate, using fallback');
-                    // Fallback: mark the correct tab button as active based on tabName
-                    document.querySelectorAll('.tab-btn').forEach(btn => {
-                        const text = btn.textContent || '';
-                        if ((text.includes('Auth') && tabName === 'auth') ||
-                            (text.includes('Shorten') && tabName === 'shorten') ||
-                            (text.includes('My URLs') && tabName === 'myurls')) {
-                            btn.classList.add('active');
-                            console.log('Activated button via fallback');
-                        }
-                    });
-                }
-            } catch (err) {
-                console.error('Error in switchTab:', err);
-            }
-        }
-
-        // Toggle auth form
         function toggleAuthForm() {
-            document.getElementById('registerForm').style.display = 
+            document.getElementById('registerForm').style.display =
                 document.getElementById('registerForm').style.display === 'none' ? 'block' : 'none';
-            document.getElementById('loginForm').style.display = 
+            document.getElementById('loginForm').style.display =
                 document.getElementById('loginForm').style.display === 'none' ? 'block' : 'none';
         }
 
-        // Register
-        async function register() {
-            const regUsername = document.getElementById('regUsername').value.trim();
+        async function handleRegister() {
+            const user = document.getElementById('regUsername').value.trim();
             const email = document.getElementById('regEmail').value.trim();
-            const password = document.getElementById('regPassword').value;
+            const pass = document.getElementById('regPassword').value;
 
-            console.log('Register clicked:', { regUsername, email, password });
-
-            if (!regUsername || !email || !password) {
-                showMessage('Please fill in all fields', 'error');
+            if (!user || !email || !pass) {
+                showMessage('❌ All fields required', 'error');
                 return;
             }
 
+            setLoading('auth', true);
             try {
-                showLoading('auth', true);
-                console.log('Sending request to:', `${API_BASE}/auth/register`);
                 const res = await fetch(`${API_BASE}/auth/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username: regUsername, email, password })
+                    body: JSON.stringify({ username: user, email, password: pass })
                 });
-                console.log('Response status:', res.status);
                 const data = await res.json();
-                console.log('Response data:', data);
 
                 if (res.ok) {
                     accessToken = data.accessToken;
@@ -611,34 +530,32 @@
                     localStorage.setItem('refreshToken', refreshToken);
                     localStorage.setItem('username', username);
                     showMessage('✅ Registration successful!', 'success');
-                    updateAuthStatus();
+                    updateAuthUI();
                 } else {
-                    showMessage('❌ ' + data.error, 'error');
+                    showMessage('❌ ' + (data.error || 'Registration failed'), 'error');
                 }
             } catch (err) {
-                console.error('Fetch error:', err);
                 showMessage('❌ Error: ' + err.message, 'error');
             } finally {
-                showLoading('auth', false);
+                setLoading('auth', false);
             }
         }
 
-        // Login
-        async function login() {
-            const loginUsername = document.getElementById('loginUsername').value.trim();
-            const password = document.getElementById('loginPassword').value;
+        async function handleLogin() {
+            const user = document.getElementById('loginUsername').value.trim();
+            const pass = document.getElementById('loginPassword').value;
 
-            if (!loginUsername || !password) {
-                showMessage('Please fill in all fields', 'error');
+            if (!user || !pass) {
+                showMessage('❌ Username and password required', 'error');
                 return;
             }
 
+            setLoading('auth', true);
             try {
-                showLoading('auth', true);
                 const res = await fetch(`${API_BASE}/auth/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username: loginUsername, password })
+                    body: JSON.stringify({ username: user, password: pass })
                 });
                 const data = await res.json();
 
@@ -650,26 +567,25 @@
                     localStorage.setItem('refreshToken', refreshToken);
                     localStorage.setItem('username', username);
                     showMessage('✅ Login successful!', 'success');
-                    updateAuthStatus();
+                    updateAuthUI();
                 } else {
-                    showMessage('❌ ' + data.error, 'error');
+                    showMessage('❌ ' + (data.error || 'Login failed'), 'error');
                 }
             } catch (err) {
                 showMessage('❌ Error: ' + err.message, 'error');
             } finally {
-                showLoading('auth', false);
+                setLoading('auth', false);
             }
         }
 
-        // Refresh token
-        async function refreshAccessToken() {
+        async function handleRefreshToken() {
             if (!refreshToken) {
                 showMessage('❌ No refresh token available', 'error');
                 return;
             }
 
+            setLoading('auth', true);
             try {
-                showLoading('auth', true);
                 const res = await fetch(`${API_BASE}/auth/refresh`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -681,54 +597,50 @@
                     accessToken = data.accessToken;
                     localStorage.setItem('accessToken', accessToken);
                     showMessage('✅ Token refreshed!', 'success');
-                    updateAuthStatus();
                 } else {
-                    showMessage('❌ ' + data.error, 'error');
+                    showMessage('❌ ' + (data.error || 'Refresh failed'), 'error');
                 }
             } catch (err) {
                 showMessage('❌ Error: ' + err.message, 'error');
             } finally {
-                showLoading('auth', false);
+                setLoading('auth', false);
             }
         }
 
-        // Logout
-        function logout() {
+        function handleLogout() {
             accessToken = null;
             refreshToken = null;
             username = null;
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
             localStorage.removeItem('username');
-            showMessage('✅ Logged out successfully', 'success');
-            updateAuthStatus();
+            showMessage('✅ Logged out!', 'success');
+            updateAuthUI();
         }
 
-        // Shorten URL
-        async function shortenUrl() {
-            const longUrl = document.getElementById('longUrl').value.trim();
-            const expiresIn = document.getElementById('expiresIn').value.trim();
-            const customCode = document.getElementById('customCode').value.trim();
+        // ==================== URL SHORTENING FUNCTIONS ====================
 
-            console.log('shortenUrl called with:', { longUrl, expiresIn, customCode, accessToken: accessToken ? 'exists' : 'missing' });
+        async function handleShortenUrl() {
+            if (!accessToken) {
+                showMessage('❌ Please login first', 'error');
+                return;
+            }
+
+            const longUrl = document.getElementById('longUrl').value.trim();
+            const customCode = document.getElementById('customCode').value.trim();
+            const expiresIn = document.getElementById('expiresIn').value.trim();
 
             if (!longUrl) {
-                showMessage('Please enter a long URL', 'error');
+                showMessage('❌ URL required', 'error');
                 return;
             }
 
-            if (!accessToken) {
-                showMessage('Please login first', 'error');
-                return;
-            }
-
+            setLoading('shorten', true);
             try {
-                showLoading('shorten', true);
                 const body = { longUrl };
-                if (expiresIn) body.expiresIn = expiresIn;
                 if (customCode) body.customCode = customCode;
+                if (expiresIn) body.expiresIn = expiresIn;
 
-                console.log('Sending shorten request:', body);
                 const res = await fetch(`${API_BASE}/shorten`, {
                     method: 'POST',
                     headers: {
@@ -737,153 +649,117 @@
                     },
                     body: JSON.stringify(body)
                 });
-                console.log('Response status:', res.status);
                 const data = await res.json();
-                console.log('Response data:', data);
 
                 if (res.ok) {
                     currentShortUrl = data.shortUrl;
-                    console.log('Short URL created:', currentShortUrl);
-                    const result = document.getElementById('shortenResult');
-                    const content = document.getElementById('shortenResultContent');
-                    console.log('Result element:', result);
-                    console.log('Content element:', content);
-                    
-                    if (!result || !content) {
-                        console.error('Result or content element not found!');
-                        showMessage('❌ UI error - could not display result', 'error');
-                        return;
+                    let result = `<strong>${data.shortCode}</strong><br>`;
+                    result += `<small>${data.shortUrl}</small><br>`;
+                    if (data.expiresAt) {
+                        result += `<small>Expires: ${new Date(data.expiresAt).toLocaleString()}</small>`;
                     }
-                    
-                    content.innerHTML = `
-                        ✅ Short URL created!<br/>
-                        <strong style="font-size: 16px; color: #2e7d32;">${data.shortCode}</strong><br/>
-                        <small>${data.shortUrl}</small><br/>
-                        ${data.expiresAt ? `<small>Expires: ${new Date(data.expiresAt).toLocaleString()}</small>` : ''}
-                    `;
-                    result.style.display = 'block';
+                    document.getElementById('resultContent').innerHTML = result;
                     document.getElementById('shortenForm').style.display = 'none';
-                    console.log('Result display updated');
+                    document.getElementById('shortenResult').style.display = 'block';
+                    showMessage('✅ URL shortened!', 'success');
                 } else {
-                    console.error('Error response:', data);
-                    showMessage('❌ ' + (data.error || 'Unknown error'), 'error');
+                    showMessage('❌ ' + (data.error || 'Failed to shorten'), 'error');
                 }
             } catch (err) {
-                console.error('Fetch error:', err);
                 showMessage('❌ Error: ' + err.message, 'error');
             } finally {
-                showLoading('shorten', false);
+                setLoading('shorten', false);
             }
         }
 
-        // Copy to clipboard
-        function copyToClipboard() {
+        function copyShortenUrl() {
             navigator.clipboard.writeText(currentShortUrl).then(() => {
-                showMessage('✅ Copied to clipboard!', 'success');
+                showMessage('✅ Copied!', 'success');
+            }).catch(() => {
+                showMessage('❌ Could not copy', 'error');
             });
         }
 
-        // Clear shorten form
-        function clearShortenForm() {
+        function resetShortenForm() {
             document.getElementById('longUrl').value = '';
-            document.getElementById('expiresIn').value = '';
             document.getElementById('customCode').value = '';
+            document.getElementById('expiresIn').value = '';
             document.getElementById('shortenForm').style.display = 'block';
             document.getElementById('shortenResult').style.display = 'none';
         }
 
-        // Load my URLs
-        async function loadMyUrls() {
+        // ==================== MY URLS FUNCTIONS ====================
+
+        async function handleLoadMyUrls() {
             if (!accessToken) {
-                showMessage('Please login first', 'error');
+                showMessage('❌ Please login first', 'error');
                 return;
             }
 
+            setLoading('myurls', true);
             try {
-                showLoading('myurls', true);
                 const res = await fetch(`${API_BASE}/my-urls`, {
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`
-                    }
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
                 });
                 const data = await res.json();
 
                 if (res.ok) {
                     const list = document.getElementById('urlList');
-                    if (data.urls.length === 0) {
-                        list.innerHTML = '<li style="color: #999; font-size: 13px;">No URLs yet</li>';
+                    if (!data.urls || data.urls.length === 0) {
+                        list.innerHTML = '<li style="color: #999; text-align: center; padding: 20px;">No URLs yet</li>';
                     } else {
                         list.innerHTML = data.urls.map(url => `
                             <li class="url-item">
-                                <div class="url-item-code">🔗 ${url.shortCode}</div>
-                                <div class="url-item-original">${url.originalUrl}</div>
-                                <div class="stats">👁️ ${url.clicks} clicks | 📅 ${new Date(url.createdAt).toLocaleDateString()}</div>
-                                <div class="url-item-actions">
+                                <div class="url-code">🔗 ${url.shortCode}</div>
+                                <div class="url-original">${url.originalUrl}</div>
+                                <div class="url-stats">👁️ ${url.clicks || 0} clicks | 📅 ${new Date(url.createdAt).toLocaleDateString()}</div>
+                                <div class="url-actions">
                                     <button onclick="openUrl('${url.shortCode}')">Visit</button>
-                                    <button onclick="copyUrl('${url.shortUrl}')">Copy</button>
+                                    <button onclick="copyUrlToClip('${url.shortUrl}')">Copy</button>
                                     <button onclick="deleteUrl('${url.shortCode}')">Delete</button>
                                 </div>
                             </li>
                         `).join('');
                     }
                 } else {
-                    showMessage('❌ ' + data.error, 'error');
+                    showMessage('❌ ' + (data.error || 'Failed to load'), 'error');
                 }
             } catch (err) {
                 showMessage('❌ Error: ' + err.message, 'error');
             } finally {
-                showLoading('myurls', false);
+                setLoading('myurls', false);
             }
         }
 
-        // Open URL
         function openUrl(code) {
             window.open(`${API_BASE}/${code}`, '_blank');
         }
 
-        // Copy URL
-        function copyUrl(url) {
+        function copyUrlToClip(url) {
             navigator.clipboard.writeText(url).then(() => {
                 showMessage('✅ Copied!', 'success');
             });
         }
 
-        // Delete URL
         async function deleteUrl(code) {
             if (!confirm('Delete this URL?')) return;
 
             try {
                 const res = await fetch(`${API_BASE}/shorten/${code}`, {
                     method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`
-                    }
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
                 });
                 const data = await res.json();
 
                 if (res.ok) {
-                    showMessage('✅ URL deleted!', 'success');
-                    loadMyUrls();
+                    showMessage('✅ Deleted!', 'success');
+                    handleLoadMyUrls();
                 } else {
-                    showMessage('❌ ' + data.error, 'error');
+                    showMessage('❌ ' + (data.error || 'Delete failed'), 'error');
                 }
             } catch (err) {
                 showMessage('❌ Error: ' + err.message, 'error');
             }
-        }
-
-        // Show message
-        function showMessage(msg, type) {
-            const el = document.getElementById('message');
-            el.className = type;
-            el.textContent = msg;
-            el.style.display = 'block';
-            setTimeout(() => el.style.display = 'none', 4000);
-        }
-
-        // Show/hide loading
-        function showLoading(tab, show) {
-            document.getElementById(tab + 'Loading').classList.toggle('show', show);
         }
     </script>
 </body>
