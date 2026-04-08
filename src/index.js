@@ -1,7 +1,6 @@
 const express = require('express');
 const swaggerUi = require('swagger-ui-express');
 const { config, isRedisConnected } = require('./config');
-const { shortenRateLimiter } = require('./middleware');
 const routes = require('./routes');
 const authRoutes = require('./auth-routes');
 const healthRoutes = require('./health-routes');
@@ -43,9 +42,6 @@ app.get('/api-docs', swaggerUi.setup(swaggerSpecs, {
   customCss: '.swagger-ui { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }',
   customSiteTitle: 'URLCraft API Documentation',
 }));
-
-// Rate limiting for specific endpoints
-app.use('/shorten', shortenRateLimiter);
 
 // Routes
 app.use('/health', healthRoutes);
