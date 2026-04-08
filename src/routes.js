@@ -1,10 +1,12 @@
 const express = require('express');
+const axios = require('axios');
 const { pool, redisClient, isRedisConnected } = require('./config');
 const { isValidUrl, getOrGenerateCode, parseExpiration, isUrlExpired } = require('./helpers');
 const { authenticateJWT, checkUrlOwnership } = require('./auth-middleware');
 
 const router = express.Router();
 const PORT = 3000;
+const DASHBOARD_URL = process.env.DASHBOARD_URL || 'http://localhost:3001';
 
 /**
  * @swagger
@@ -60,6 +62,13 @@ router.post('/shorten', authenticateJWT, async (req, res) => {
     if (isRedisConnected()) {
       await redisClient.setEx(`url:${code}`, 24 * 60 * 60, longUrl);
     }
+
+    // Track URL creation in dashboard
+    axios.post(`${DASHBOARD_URL}/api/track/url-created`, {
+      userId,
+      shortCode: code,
+      originalUrl: longUrl
+    }).catch(err => console.log('Dashboard tracking failed:', err.message));
 
     res.status(201).json({
       shortCode: code,
@@ -331,6 +340,14 @@ router.get('/:shortCode', async (req, res) => {
     if (isRedisConnected()) {
       await redisClient.incr(`clicks:${shortCode}`);
     }
+
+    // Track URL click in dashboard
+    const clickResult = await pool.query('SELECT clicks FROM urls WHERE short_code = $1', [shortCode]);
+    const clickCount = clickResult.rows[0]?.clicks || 0;
+    axios.post(`${DASHBOARD_URL}/api/track/url-clicked`, {
+      shortCode,
+      clickCount
+    }).catch(err => console.log('Dashboard tracking failed:', err.message));
 
     res.redirect(301, originalUrl);
   } catch (error) {

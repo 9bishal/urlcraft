@@ -1,4 +1,5 @@
 const express = require('express');
+const axios = require('axios');
 const swaggerUi = require('swagger-ui-express');
 const { config, isRedisConnected } = require('./config');
 const routes = require('./routes');
@@ -8,6 +9,7 @@ const swaggerSpecs = require('./swagger');
 const { initializeAuthTables } = require('./init-auth-db');
 
 const app = express();
+const DASHBOARD_URL = process.env.DASHBOARD_URL || 'http://localhost:3001';
 
 // Enable CORS with configurable origin
 app.use((req, res, next) => {
@@ -35,6 +37,31 @@ app.use((req, res, next) => {
 // Middleware
 app.use(express.json());
 app.use(express.static('frontend'));
+
+// Request tracking middleware
+app.use((req, res, next) => {
+  const startTime = Date.now();
+  
+  // Capture original res.json
+  const originalJson = res.json;
+  res.json = function(data) {
+    const responseTime = Date.now() - startTime;
+    
+    // Track to dashboard (skip health checks and api-docs)
+    if (!req.path.startsWith('/health') && !req.path.startsWith('/api-docs')) {
+      axios.post(`${DASHBOARD_URL}/api/track/request`, {
+        method: req.method,
+        endpoint: req.path,
+        statusCode: res.statusCode,
+        responseTime
+      }).catch(err => console.log('Dashboard tracking failed:', err.message));
+    }
+    
+    return originalJson.call(this, data);
+  };
+  
+  next();
+});
 
 // Swagger UI
 app.use('/api-docs', swaggerUi.serve);
